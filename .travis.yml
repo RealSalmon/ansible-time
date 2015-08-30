@@ -16,12 +16,6 @@ script:
       | grep -q '.*failed=0'
       || (echo 'Playbook failed' > /dev/stderr && exit 1)
 
-  # Test idempotency
-  - >
-      ansible-playbook --connection local -i localhost, playbook.yml
-      | grep -q 'changed=0.*failed=0'
-      || (echo 'Idempotency check failed' > /dev/stderr && exit 1)
-
   # Test that ntp is running
   - >
       sudo /etc/init.d/ntp status
