@@ -1,0 +1,20 @@
+---
+
+- name: ensure timezone is correct
+  become: yes
+  become_method: sudo
+  file:
+    src: /usr/share/zoneinfo/{{ time_timezone }}
+    dest: /etc/localtime
+    state: link
+    force: yes
+
+- name: ensure ntp is installed
+  become: yes
+  become_method: sudo
+  apt: name=ntp state=installed
+
+- name: ensure ntp is started and enabled
+  become: yes
+  become_method: sudo
+  service: name=ntp state=started enabled=yes

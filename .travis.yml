@@ -1,0 +1,33 @@
+---
+language: python
+python: 2.7
+sudo: yes
+
+install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq python-pip
+  - sudo pip -q install ansible
+
+script:
+
+  # Test role
+  - >
+      ansible-playbook --connection local -i localhost, playbook.yml
+      | grep -q '.*failed=0'
+      || (echo 'Playbook failed' > /dev/stderr && exit 1)
+
+  # Test idempotency
+  - >
+      ansible-playbook --connection local -i localhost, playbook.yml
+      | grep -q 'changed=0.*failed=0'
+      || (echo 'Idempotency check failed' > /dev/stderr && exit 1)
+
+  # Test that ntp is running
+  - >
+      sudo /etc/init.d/ntp status
+      || (echo 'ntp service status check failed' > /dev/stderr && exit 1)
+
+  # Test timezone link
+  - >
+    [ "/usr/share/zoneinfo/America/Chicago" -ef "/etc/localtime" ]
+    || (echo 'timezone link check failed' > /dev/stderr && exit 1)
