@@ -25,3 +25,8 @@ script:
   - >
     [ "/usr/share/zoneinfo/America/Chicago" -ef "/etc/localtime" ]
     || (echo 'timezone link check failed' > /dev/stderr && exit 1)
+
+  # Test /etc/timezone contents
+  - >
+    grep "^America/Chicago" /etc/timezone
+    || (echo '/etc/timezone contents check failed' > /dev/stderr && exit 1)
